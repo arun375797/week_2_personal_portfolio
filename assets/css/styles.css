@@ -824,3 +824,21 @@ img {
   margin-bottom: 20px;
   overflow: hidden;
 }
+/* Style error messages */
+.error {
+  color: red;
+  margin-top: 5px;
+  margin-left: 5px;
+  display: block;
+}
+
+/* Ensure the form elements including the submit button remain aligned */
+.form-group {
+  position: relative;
+  margin-bottom: 20px; /* Adjust as needed for spacing */
+}
+
+button {
+  display: block;
+  margin: 20px auto; /* Center align the button, adjust as needed */
+}
