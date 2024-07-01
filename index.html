@@ -399,14 +399,14 @@
       <h2 class="section-title">Get In Touch</h2>
     
       <div class="contact__container bd-grid">
-        <form method="POST" id="google-sheets" action="" onsubmit="return validateForm()">
+        <form method="POST" id="google-sheets" action="https://script.google.com/macros/s/AKfycbwkqhdpQNstixmOmueInLle4tW-Pv60M-HKtJq02JFgPRiKV9_lNjZpJvQ3OL22TbUr5Q/exec">
           <input type="text" id="name" name="name" placeholder="Name" class="contact__input" required />
           <input type="email" id="email" name="email" placeholder="Email" class="contact__input" required />
           <textarea name="message" id="message" cols="30" rows="10" placeholder="Message" class="contact__input" required></textarea>
           <button type="submit" class="button contact__button">Submit Form</button>
           <button type="reset" class="button contact__button">Reset Form</button>
-        </form>
-    
+      </form>
+      
         <div>
           <div class="contact__info">
             <h3 class="contact__subtitle">Phone Number</h3>
@@ -497,49 +497,61 @@
   </script>
 
   <script>
+// Add custom method for pattern validation
+$.validator.addMethod("customPattern", function(value, element, pattern) {
+  return this.optional(element) || pattern.test(value);
+}, "Invalid format.");
+
 $("#google-sheets").validate({
-    rules: {
-        name: {
-            required: true,
-            minlength: 2
-        },
-        email: {
-            required: true,
-            email: true, 
-            // pattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-        },
-        message: {
-            required: true,
-            minlength: 5
-        }
+  rules: {
+    name: {
+      required: true,
+      minlength: 2,
+      customPattern: /^[a-zA-Z ]*$/
+    },
+    email: {
+      required: true,
+      email: true,
+      customPattern: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
     },
     message: {
-        name: {
-            minlength: "Please enter at least 2 characters."
-        },
-        message: {
-            minlength: "Please enter at least 5 characters."
-        }
-    },
-    submitHandler: function (form) {
-        $("#google-sheets").submit((e) => {
-            e.preventDefault();
-            $.ajax({
-                url: "https://script.google.com/macros/s/AKfycbwkqhdpQNstixmOmueInLle4tW-Pv60M-HKtJq02JFgPRiKV9_lNjZpJvQ3OL22TbUr5Q/exec",  // Replace with your deployed web app URL
-                data: $("#google-sheets").serialize(),
-                method: "POST",
-                success: function (response) {
-                    alert("Form submitted successfully");
-                    window.location.reload();
-                },
-                error: function (err) {
-                    alert("Something went wrong");
-                    
-                }
-            });
-        });
+      required: true,
+      minlength: 5
     }
+  },
+  messages: {
+    name: {
+      required: "Please enter your name.",
+      minlength: "Please enter at least 2 characters.",
+      customPattern: "Please enter only letters and spaces."
+    },
+    email: {
+      required: "Please enter your email address.",
+      email: "Please enter a valid email address.",
+      customPattern: "Please enter a valid email address."
+    },
+    message: {
+      required: "Please enter a message.",
+      minlength: "Please enter at least 5 characters."
+    }
+  },
+  submitHandler: function(form) {
+    $.ajax({
+      url: form.action, // Ensure you provide the correct form action URL
+      data: $(form).serialize(),
+      method: "POST",
+      success: function(response) {
+        alert("Form submitted successfully");
+        window.location.reload();
+      },
+      error: function(xhr, status, error) {
+        console.error("Error details:", status, error, xhr.responseText);
+        alert("Something went wrong: " + xhr.responseText);
+      }
+    });
+  }
 });
+
 
   </script>
 
